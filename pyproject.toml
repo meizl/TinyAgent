@@ -4,13 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tiny-agent"
-version = "0.1.0"
-description = "轻量化 Agent 系统，参考 LangChain/LangGraph 设计"
+version = "0.2.0"
+description = "轻量化 Agent 系统，参考 LangChain/LangGraph 设计——支持模型调用、工具注册、RAG 检索增强生成"
 requires-python = ">=3.10"
 dependencies = [
     "openai>=1.0",
     "python-dotenv>=1.0",
 ]
+
+[project.optional-dependencies]
+# PDF 文档加载
+pdf = ["PyPDF2>=3.0"]
+# Word 文档加载
+docx = ["python-docx>=1.0"]
+# RAG 全部文档格式支持
+rag = ["PyPDF2>=3.0", "python-docx>=1.0"]
+# 完整安装
+all = ["PyPDF2>=3.0", "python-docx>=1.0"]
 
 [tool.setuptools.packages.find]
 where = ["."]
