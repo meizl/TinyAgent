@@ -120,10 +120,6 @@ class OpenAIAdapter(BaseLLM):
         params.update(kwargs)
         return params
 
-    def set_model(self, model: str) -> None:
-        """动态切换模型，不需要重建客户端连接。"""
-        self.model = model
-
     def _convert_messages(self, messages: List[Message]) -> List[Dict[str, Any]]:
         """将内部 Message 对象列表转换为 OpenAI API 所需的消息格式。"""
         converted = []
