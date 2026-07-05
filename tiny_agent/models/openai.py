@@ -159,22 +159,37 @@ class OpenAIAdapter(BaseLLM):
         return converted
 
     def _convert_tools(
-        self, tools: Optional[List[Dict]]
+        self, tools: Any
     ) -> Optional[List[ChatCompletionToolParam]]:
-        """将工具描述字典列表转换为 OpenAI API 的工具参数格式。"""
+        """将工具转换为 OpenAI API 的工具参数格式。
+        
+        支持三种输入：
+        - ToolRegistry 对象
+        - List[Tool] 列表
+        - List[Dict] 字典列表（兼容旧格式）
+        """
         if not tools:
             return None
-        return [
-            {
-                "type": "function",
-                "function": {
-                    "name": tool.get("name", ""),
-                    "description": tool.get("description", ""),
-                    "parameters": tool.get("parameters", {}),
-                },
-            }
-            for tool in tools
-        ]
+
+        # ToolRegistry
+        if hasattr(tools, "to_openai_format"):
+            return tools.to_openai_format()
+
+        # List[Tool] 或 List[Dict]
+        result = []
+        for tool in tools:
+            if hasattr(tool, "to_openai_format"):
+                result.append(tool.to_openai_format())
+            else:
+                result.append({
+                    "type": "function",
+                    "function": {
+                        "name": tool.get("name", ""),
+                        "description": tool.get("description", ""),
+                        "parameters": tool.get("parameters", {}),
+                    },
+                })
+        return result
 
     def _parse_response(self, response) -> LLMResponse:
         """将 OpenAI API 原始响应解析为统一的 LLMResponse 对象。"""

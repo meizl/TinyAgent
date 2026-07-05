@@ -10,3 +10,4 @@ from tiny_agent.core import (
     BaseLLM,
 )
 from tiny_agent.models import OpenAIAdapter
+from tiny_agent.tools import Tool, ToolRegistry
